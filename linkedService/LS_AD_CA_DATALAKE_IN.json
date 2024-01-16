@@ -1,0 +1,12 @@
+{
+	"name": "LS_AD_CA_DATALAKE_IN",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": "DefaultEndpointsProtocol=https;AccountName=adcadatalakedev;EndpointSuffix=core.windows.net;",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDU1QjgzMDc0LUUyNDctNEZGNi1CMjNDLTI1QTMwNTM4MTAwN19iMmU4YzI1My0zN2RmLTRiNDEtYTQ0MC02NzkxNDkxM2NmZTYiDQp9"
+		}
+	}
+}

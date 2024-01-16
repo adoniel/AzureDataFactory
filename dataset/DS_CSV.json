@@ -1,0 +1,29 @@
+{
+	"name": "DS_CSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AD_CA_DATALAKE_IN",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Imoveis_5300108.csv",
+				"container": "raw"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "\"CÓDIGO DO IMOVEL\";\"DENOMIÇÃO DO IMÓVEL\";\"CÓDIGO DO MUNICÍPIO (IBGE)\";\"MUNICÍPIO\";\"UF\";\"ÁREA TOTAL\";\"TITULAR\";\"NATUREZA JURÍDICA\";\"CONDIÇÃO DA PESSOA\";\"PERCENTUAL DE DETENÇÃO\";\"PAÍS\"",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

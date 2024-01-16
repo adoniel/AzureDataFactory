@@ -1,0 +1,191 @@
+{
+	"name": "PL_DADOS_AGRICUTURA",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "CÓDIGO DO IMOVEL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CODIGO_DO_IMOVEL",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "DENOMIÇÃO DO IMÓVEL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DENOMICAOO_DO_IMOVEL",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "CÓDIGO DO MUNICÍPIO (IBGE)",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CODIGO_DO_MUNICIPIO_IBGE",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "MUNICÍPIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MUNICIPIO",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "UF",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "UF",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "ÁREA TOTAL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "AREA TOTAL",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "TITULAR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TITULAR",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "NATUREZA JURÍDICA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NATUREZA_JURIDICA",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "CONDIÇÃO DA PESSOA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CONDICAO_DA_PESSOA",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "PERCENTUAL DE DETENÇÃO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PERCENTUAL_DE_DETENCAO",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "PAÍS",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PAIS",
+									"physicalType": "UTF8"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SINK_PARQUET",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-01-16T19:09:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
