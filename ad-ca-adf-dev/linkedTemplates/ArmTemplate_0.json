@@ -1,0 +1,291 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ad-ca-adf-dev"
+		},
+		"LS_AD_CA_DATALAKE_IN_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AD_CA_DATALAKE_IN'"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AD_CA_DATALAKE_IN')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_AD_CA_DATALAKE_IN_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AD_CA_DATALAKE_IN",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Imoveis_5300108.csv",
+						"container": "raw"
+					},
+					"columnDelimiter": ";",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "\"CÓDIGO DO IMOVEL\";\"DENOMIÇÃO DO IMÓVEL\";\"CÓDIGO DO MUNICÍPIO (IBGE)\";\"MUNICÍPIO\";\"UF\";\"ÁREA TOTAL\";\"TITULAR\";\"NATUREZA JURÍDICA\";\"CONDIÇÃO DA PESSOA\";\"PERCENTUAL DE DETENÇÃO\";\"PAÍS\"",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AD_CA_DATALAKE_IN')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SINK_PARQUET')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AD_CA_DATALAKE_IN",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "silver"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AD_CA_DATALAKE_IN')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_DADOS_AGRICUTURA_PPL')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CÓDIGO DO IMOVEL",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CODIGO_DO_IMOVEL",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "DENOMIÇÃO DO IMÓVEL",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DENOMICAOO_DO_IMOVEL",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "CÓDIGO DO MUNICÍPIO (IBGE)",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CODIGO_DO_MUNICIPIO_IBGE",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "MUNICÍPIO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MUNICIPIO",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "UF",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "UF",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "ÁREA TOTAL",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "AREA TOTAL",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "TITULAR",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TITULAR",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "NATUREZA JURÍDICA",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "NATUREZA_JURIDICA",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "CONDIÇÃO DA PESSOA",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CONDICAO_DA_PESSOA",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "PERCENTUAL DE DETENÇÃO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PERCENTUAL_DE_DETENCAO",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "PAÍS",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PAIS",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_CSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SINK_PARQUET",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-16T19:09:35Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_CSV')]",
+				"[concat(variables('factoryId'), '/datasets/SINK_PARQUET')]"
+			]
+		}
+	]
+}
