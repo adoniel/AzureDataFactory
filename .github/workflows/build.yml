@@ -8,12 +8,12 @@ permissions:
       contents: read
 
 jobs:
-  build:
+  :
     runs-on: ubuntu-latest
     steps:
 
     - uses: actions/checkout@v3
-# Installs Node and the npm packages saved in your package.json file in the build
+# Installs Node and the npm packages saved in your package.json file in the 
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.4.1
       with:
@@ -21,32 +21,32 @@ jobs:
         
     - name: install ADF Utilities package
       run: npm install
-      working-directory: ${{github.workspace}}/AzureDataFactory/build  # (1) provide the folder location of the package.json file
+      working-directory: ${{github.workspace}}/AzureDataFactory/  # (1) provide the folder location of the package.json file
         
 # Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
     - name: Validate
-      run: npm run build validate ${{github.workspace}}/AzureDataFactory/ /subscriptions/7ea0a171-addf-4d22-b6aa-6b4dc36379b8/resourceGroups/ad-ca-lab/providers/Microsoft.DataFactory/factories/ad-ca-adf-dev # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance 
-      working-directory: ${{github.workspace}}/AzureDataFactory/build
+      run: npm run  validate ${{github.workspace}}/AzureDataFactory/ /subscriptions/7ea0a171-addf-4d22-b6aa-6b4dc36379b8/resourceGroups/ad-ca-lab/providers/Microsoft.DataFactory/factories/ad-ca-adf-dev # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance 
+      working-directory: ${{github.workspace}}/AzureDataFactory/
  
 
     - name: Validate and Generate ARM template
-      run: npm run build export ${{github.workspace}}/AzureDataFactory/ /subscriptions/7ea0a171-addf-4d22-b6aa-6b4dc36379b8/resourceGroups/ad-ca-lab/providers/Microsoft.DataFactory/factories/ad-ca-adf-dev "ExportedArmTemplate"  # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact name 
-      working-directory: ${{github.workspace}}/AzureDataFactory/build
+      run: npm run  export ${{github.workspace}}/AzureDataFactory/ /subscriptions/7ea0a171-addf-4d22-b6aa-6b4dc36379b8/resourceGroups/ad-ca-lab/providers/Microsoft.DataFactory/factories/ad-ca-adf-dev "ExportedArmTemplate"  # (3) The  command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact name 
+      working-directory: ${{github.workspace}}/AzureDataFactory/
  
 # In order to leverage the artifact in another job, we need to upload it with the upload action 
     - name: upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
-        path: ${{github.workspace}}/AzureDataFactory/build/ExportedArmTemplate
+        path: ${{github.workspace}}/AzureDataFactory//ExportedArmTemplate
         
   release:
-    needs: build
+    needs: 
     runs-on: ubuntu-latest
     steps:
     
  # we 1st download the previously uploaded artifact so we can leverage it later in the release job     
-      - name: Download a Build Artifact
+      - name: Download a  Artifact
         uses: actions/download-artifact@v3.0.2
         with:
           name: ExportedArmTemplate # (5) Artifact name 
