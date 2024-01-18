@@ -21,24 +21,24 @@ jobs:
         
     - name: install ADF Utilities package
       run: npm install
-      working-directory: ${{github.workspace}}/AzureDataFactory/build  # (1) provide the folder location of the package.json file
+      working-directory: ${{github.workspace}}/AzureDataFactory  # (1) provide the folder location of the package.json file
         
 # Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
     - name: Validate
       run: npm run build validate ${{github.workspace}}/AzureDataFactory/ /subscriptions/7ea0a171-addf-4d22-b6aa-6b4dc36379b8/resourceGroups/ad-ca-lab/providers/Microsoft.DataFactory/factoriesad-ca-adf-dev # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance 
-      working-directory: ${{github.workspace}}/AzureDataFactory/build
+      working-directory: ${{github.workspace}}/AzureDataFactory
  
 
     - name: Validate and Generate ARM template
       run: npm run build export ${{github.workspace}}/AzureDataFactory/ /subscriptions/7ea0a171-addf-4d22-b6aa-6b4dc36379b8/resourceGroups/ad-ca-lab/providers/Microsoft.DataFactory/factoriesad-ca-adf-dev "ExportedArmTemplate"  # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact name 
-      working-directory: ${{github.workspace}}/AzureDataFactory/build
+      working-directory: ${{github.workspace}}/AzureDataFactory
  
 # In order to leverage the artifact in another job, we need to upload it with the upload action 
     - name: upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
-        path: ${{github.workspace}}/AzureDataFactory/build/ExportedArmTemplate
+        path: ${{github.workspace}}/AzureDataFactory/ExportedArmTemplate
         
   release:
     needs: build
